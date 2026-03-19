@@ -1,59 +1,353 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏦 Financial Transaction System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## 📌 Overview
 
-## About Laravel
+This project is a **real-world simulation of a financial transaction processing system**, designed to handle:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Payments
+- Wallet balance updates
+- Webhook-based confirmations
+- Concurrency & race conditions
+- Idempotency & duplicate prevention
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+The goal is to **demonstrate senior-level backend engineering skills**, focusing on reliability, consistency, and real production challenges.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🎯 Project Goals
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+This project is built to prove:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Ability to design **financial systems**
+- Handling **concurrent requests safely**
+- Implementing **idempotent APIs**
+- Managing **event-driven workflows**
+- Ensuring **data consistency under failure**
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+---
 
-## Agentic Development
+## 🧱 System Architecture
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+This system uses a modular architecture with DTOs and interface-based service and repository layers.
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+Controller -> DTO -> Service Layer (Interface) -> Repository Layer (Interface) -> Database
+        ↓
+       Queue
+        ↓
+Webhook Processor
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+---
 
-## Contributing
+## ⚙️ Core Features
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 1. Transaction Creation
 
-## Code of Conduct
+- Create transaction with `pending` status
+- Deduct balance safely
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### 2. Idempotency
 
-## Security Vulnerabilities
+- Prevent duplicate transactions
+- Use `idempotency_key`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 3. Concurrency Control
 
-## License
+- Prevent race conditions
+- Use DB transactions + row locking
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
-# financial_transaction_system
+### 4. Wallet System
+
+- Maintain user balance
+- Deduct & refund safely
+
+### 5. Webhook Processing
+
+- Handle async confirmation
+- Support success & failure
+
+### 6. Queue System
+
+- Process webhooks asynchronously
+- Retry failed jobs
+
+---
+
+## 🗄️ Database Design
+
+### Users
+
+| Field   | Type    |
+| ------- | ------- |
+| id      | int     |
+| name    | string  |
+| balance | decimal |
+
+---
+
+### Transactions
+
+| Field           | Type    |
+| --------------- | ------- |
+| id              | int     |
+| user_id         | int     |
+| amount          | decimal |
+| status          | enum    |
+| idempotency_key | string  |
+| reference       | string  |
+
+---
+
+## 🔄 System Flows
+
+---
+
+### 🟢 Flow 1: Create Transaction
+
+1. Validate request
+2. Check idempotency key
+3. Start DB transaction
+4. Lock user row (`FOR UPDATE`)
+5. Check balance
+6. Deduct amount
+7. Create transaction (pending)
+8. Commit
+
+---
+
+### 🔵 Flow 2: Webhook Processing
+
+1. Receive webhook
+2. Validate reference
+3. Check if already processed
+4. Update transaction:
+    - success → finalize
+    - failed → refund
+5. Save result
+
+---
+
+### 🔴 Flow 3: Retry Handling
+
+- Failed jobs → retry automatically
+- Prevent duplicate processing
+- Optional exponential backoff
+
+---
+
+## 🧩 Engineering Challenges & Solutions
+
+### 🔴 Race Conditions
+
+**Solution:**
+
+- `DB::transaction`
+- `lockForUpdate()`
+
+---
+
+### 🔴 Duplicate Requests
+
+**Solution:**
+
+- Unique `idempotency_key`
+- Return existing transaction
+
+---
+
+### 🔴 Webhook Duplication
+
+**Solution:**
+
+- Idempotent webhook handler
+- Status check before update
+
+---
+
+### 🔴 System Failures
+
+**Solution:**
+
+- Queue retries
+- Rollback logic
+
+---
+
+## 🧠 Implementation Plan (STEP-BY-STEP)
+
+---
+
+### ✅ Phase 1: Basic Setup
+
+- [ ] Create Laravel project
+- [ ] Setup database
+- [ ] Create models:
+- [ ] User
+- [ ] Transaction
+
+---
+
+### ✅ Phase 2: Core Logic
+
+- [ ] Create TransactionService
+- [ ] Implement:
+- [ ] DB transactions
+- [ ] Balance deduction
+- [ ] Idempotency
+
+---
+
+### ✅ Phase 3: API Layer
+
+- [ ] POST /transactions
+- [ ] GET /transactions/{id}
+
+---
+
+### ✅ Phase 4: Concurrency Handling
+
+- [ ] Add `lockForUpdate()`
+- [ ] Test simultaneous requests
+
+---
+
+### ✅ Phase 5: Webhook System
+
+- [ ] Create webhook endpoint
+- [ ] Create ProcessWebhook job
+- [ ] Handle success/failure
+
+---
+
+### ✅ Phase 6: Queue System
+
+- [ ] Configure queue (database/redis)
+- [ ] Add retries
+
+---
+
+### ✅ Phase 7: Testing
+
+- [ ] Test idempotency
+- [ ] Test balance consistency
+- [ ] Test duplicate requests
+
+---
+
+### ✅ Phase 8: Enhancements
+
+- [ ] Add Redis locking
+- [ ] Add rate limiting
+- [ ] Add logging
+- [ ] Add monitoring
+
+---
+
+## 🧪 Example Scenario
+
+### Duplicate Request
+
+User sends 2 identical requests:
+
+→ First request:
+
+- locks balance
+- creates transaction
+
+→ Second request:
+
+- finds existing idempotency key
+- returns same transaction
+
+✅ No duplicate
+
+---
+
+### Race Condition
+
+Two requests at same time:
+
+→ Only one locks the row  
+→ Second waits  
+→ Balance remains correct
+
+---
+
+## 📡 API Endpoints
+
+```bash
+POST   /api/transactions
+GET    /api/transactions/{id}
+POST   /api/webhooks/payment
+```
+
+---
+
+## 🛠️ Tech Stack
+
+- Laravel
+- MySQL
+- Laravel Queues
+- Redis (optional)
+
+---
+
+## 🚀 How to Run
+
+```bash
+git clone https://github.com/Zohair22/financial_transaction_system.git
+cd financial_transaction_system
+
+composer install
+cp .env.example .env
+php artisan key:generate
+
+php artisan migrate
+
+php artisan serve
+```
+
+---
+
+## ⚖️ Trade-offs
+
+- DB locking → strong consistency but slower
+- Queues → reliable but adds complexity
+
+---
+
+## 🚀 Scalability Plan
+
+- Use Redis for distributed locks
+- Horizontal queue workers
+- Add rate limiting
+- Add caching
+
+---
+
+## 🔮 Future Improvements
+
+- Dead-letter queue
+- Audit logs
+- Payment provider simulation
+- Dashboard
+
+---
+
+## 💡 What This Project Proves
+
+- Real backend engineering skills
+- Financial system design
+- Concurrency handling
+- Production-level thinking
+
+---
+
+## 👨‍💻 Author
+
+Backend Engineer focused on:
+
+- Financial systems
+- Backend architecture
+- Scalable APIs
