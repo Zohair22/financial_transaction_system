@@ -118,6 +118,14 @@ return [
     |
     */
 
+    // 'providers' => [
+    //     Nwidart\Modules\LaravelModulesServiceProvider::class,
+    // ],
+
+    // 'aliases' => [
+    //     'Module' => Nwidart\Modules\Facades\Module::class,
+    // ],
+
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),

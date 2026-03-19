@@ -1,0 +1,6 @@
+{
+    "User": true,
+    "Transaction": true,
+    "Api": true,
+    "Webhook": true
+}
