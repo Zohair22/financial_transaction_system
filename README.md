@@ -180,7 +180,7 @@ Webhook Processor
 
 ### ✅ Phase 1: Basic Setup
 
-- [ ] Create Laravel project
+- [✅] Create Laravel project
 - [ ] Setup database
 - [ ] Create models:
 - [ ] User
