@@ -2,5 +2,6 @@
     "User": true,
     "Transaction": true,
     "Api": true,
-    "Webhook": true
+    "Webhook": true,
+    "Plaid": true
 }

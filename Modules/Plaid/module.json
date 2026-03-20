@@ -1,0 +1,11 @@
+{
+    "name": "Plaid",
+    "alias": "plaid",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\Plaid\\Providers\\PlaidServiceProvider"
+    ],
+    "files": []
+}
