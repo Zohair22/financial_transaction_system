@@ -2,8 +2,13 @@
 
 namespace Modules\Plaid\Providers;
 
+use Modules\Plaid\Interfaces\IClientPlaid;
+use Modules\Plaid\Interfaces\IPlaidServices;
+use Modules\Plaid\Services\ClientPlaid;
+use Modules\Plaid\Services\PlaidServices;
 use Nwidart\Modules\Support\ModuleServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
+
+// use Illuminate\Console\Scheduling\Schedule;
 
 class PlaidServiceProvider extends ModuleServiceProvider
 {
@@ -34,10 +39,25 @@ class PlaidServiceProvider extends ModuleServiceProvider
         RouteServiceProvider::class,
     ];
 
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(
+            IClientPlaid::class,
+            ClientPlaid::class
+        );
+
+        $this->app->bind(
+            IPlaidServices::class,
+            PlaidServices::class
+        );
+    }
+
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

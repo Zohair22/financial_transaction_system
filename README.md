@@ -337,10 +337,15 @@ php artisan serve
 
 ## 💡 What This Project Proves
 
-- Real backend engineering skills
-- Financial system design
-- Concurrency handling
-- Production-level thinking
+- Modular, interface-driven architecture (DTO -> Service -> Repository) with dependency injection and SOLID boundaries
+- Idempotent write APIs using `idempotency_key` to prevent duplicates safely
+- Concurrency safety via database transactions + row locking to avoid race conditions and balance corruption
+- Event-driven webhook workflows: async ingestion via queued jobs, with retries and success/failure reconciliation
+- Provider integration patterns structured as testable services with config-based wiring
+- Production rigor: failure-safe state transitions (pending/success/failed), rollback/refund logic, and operational thinking
+- Testing discipline with PHPUnit to cover happy paths, edge cases, and regression protection
+
+> In the "grand coding battle arena," each transaction is a duel: idempotency is my spell against duplicates, row-locking is my shield against race conditions, and queued webhooks are my army that survives retries and adversarial timing.
 
 ---
 
