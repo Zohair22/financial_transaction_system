@@ -3,7 +3,10 @@
 namespace Modules\User\Providers;
 
 use Nwidart\Modules\Support\ModuleServiceProvider;
-use Illuminate\Console\Scheduling\Schedule;
+use Modules\User\Interfaces\IUserRepository;
+use Modules\User\Repositories\UserRepository;
+use Modules\User\Interfaces\IAuthService;
+use Modules\User\Services\AuthService;
 
 class UserServiceProvider extends ModuleServiceProvider
 {
@@ -34,9 +37,17 @@ class UserServiceProvider extends ModuleServiceProvider
         RouteServiceProvider::class,
     ];
 
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(IUserRepository::class, UserRepository::class);
+        $this->app->bind(IAuthService::class, AuthService::class);
+    }
+
     /**
      * Define module schedules.
-     * 
+     *
      * @param $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
