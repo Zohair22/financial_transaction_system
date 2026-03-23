@@ -37,7 +37,7 @@ class PlaidServices implements IPlaidServices
             'client_name' => $dto->clientName ?? (string) config('app.name', 'App'),
             'country_codes' => config('plaid.link.country_codes', ['US']),
             'language' => (string) config('plaid.link.language', 'en'),
-            // 'products' => config('plaid.link.products', ['transactions']),
+            'products' => config('plaid.link.products', ['transactions', 'auth', 'identity', 'assets', 'income', 'accounts']),
         ];
 
         return $this->plaidPost('link/token/create', $payload);

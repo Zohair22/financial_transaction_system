@@ -27,11 +27,15 @@ class ApiPlaidController extends Controller
     ) {}
 
     /**
-     * Create a Plaid Link token (`/link/token/create`).
+     * Create a Plaid Link token (`/link/token/create`). Uses the authenticated user's id and name for Plaid `user`.
      */
     public function createLinkToken(CreateLinkTokenRequest $request): JsonResponse
     {
-        $dto = CreateLinkTokenDTO::fromValidated($request->validated(), (string) $request->user()->id);
+        $user = $request->user();
+        $dto = new CreateLinkTokenDTO(
+            (string) $user->getAuthIdentifier(),
+            $user->name,
+        );
 
         return response()->json(['data' => $this->plaid->createLinkToken($dto)]);
     }

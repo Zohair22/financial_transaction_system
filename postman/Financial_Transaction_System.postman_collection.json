@@ -1,0 +1,609 @@
+{
+	"info": {
+		"_postman_id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+		"name": "Financial Transaction System",
+		"description": "## Authentication\nUse **Bearer Token** (Laravel Sanctum). Set the `token` collection variable.\n\nLogin/register HTTP routes are not registered in this app yet (`AuthController` exists but is not wired). Create a token with `php artisan tinker`, e.g. `\\Modules\\User\\Models\\User::first()?->createToken('postman')->plainTextToken`, or add routes to `Modules\\User\\Http\\Controllers\\API\\AuthController`.\n\n## Base URL\nDefault `base_url` is `http://localhost:8000` — adjust for your environment.\n\n## Plaid\nProtected Plaid routes use the default `api` guard (Sanctum). The webhook has **no** Bearer auth.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "user_id",
+			"value": "1"
+		},
+		{
+			"key": "transaction_id",
+			"value": "1"
+		},
+		{
+			"key": "api_id",
+			"value": "1"
+		},
+		{
+			"key": "webhook_id",
+			"value": "1"
+		}
+	],
+	"item": [
+		{
+			"name": "Sanctum",
+			"item": [
+				{
+					"name": "Current user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/user"
+					}
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "List users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/users"
+					}
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Example User\",\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/users"
+					}
+				},
+				{
+					"name": "Show user",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/users/{{user_id}}"
+					}
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"updated@example.com\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/users/{{user_id}}"
+					}
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/users/{{user_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Transactions",
+			"item": [
+				{
+					"name": "List transactions",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/transactions"
+					}
+				},
+				{
+					"name": "Create transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/transactions"
+					}
+				},
+				{
+					"name": "Show transaction",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/transactions/{{transaction_id}}"
+					}
+				},
+				{
+					"name": "Update transaction",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/transactions/{{transaction_id}}"
+					}
+				},
+				{
+					"name": "Delete transaction",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/transactions/{{transaction_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "APIs (module)",
+			"item": [
+				{
+					"name": "List apis",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/apis"
+					}
+				},
+				{
+					"name": "Create api",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/apis"
+					}
+				},
+				{
+					"name": "Show api",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/apis/{{api_id}}"
+					}
+				},
+				{
+					"name": "Update api",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/apis/{{api_id}}"
+					}
+				},
+				{
+					"name": "Delete api",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/apis/{{api_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Webhooks",
+			"item": [
+				{
+					"name": "List webhooks",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/webhooks"
+					}
+				},
+				{
+					"name": "Create webhook",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/webhooks"
+					}
+				},
+				{
+					"name": "Show webhook",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/webhooks/{{webhook_id}}"
+					}
+				},
+				{
+					"name": "Update webhook",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{base_url}}/api/v1/webhooks/{{webhook_id}}"
+					}
+				},
+				{
+					"name": "Delete webhook",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/webhooks/{{webhook_id}}"
+					}
+				}
+			]
+		},
+		{
+			"name": "Plaid",
+			"item": [
+				{
+					"name": "Create link token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{base_url}}/api/v1/plaid/link-token"
+					}
+				},
+				{
+					"name": "Retrieve link token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"link_token\": \"link-production-...\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/link-token/retrieve"
+					}
+				},
+				{
+					"name": "Exchange public token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"public_token\": \"public-production-...\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/public-token/exchange"
+					}
+				},
+				{
+					"name": "Fetch accounts",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"access_token\": \"access-production-...\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/accounts"
+					}
+				},
+				{
+					"name": "Sync transactions",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"access_token\": \"access-production-...\",\n  \"cursor\": null\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/transactions/sync"
+					}
+				},
+				{
+					"name": "Fetch transactions (legacy)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"access_token\": \"access-production-...\",\n  \"start_date\": \"2024-01-01\",\n  \"end_date\": \"2024-12-31\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/transactions/fetch"
+					}
+				},
+				{
+					"name": "Webhook (Plaid)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"webhook_type\": \"TRANSACTIONS\",\n  \"webhook_code\": \"SYNC_UPDATES_AVAILABLE\",\n  \"item_id\": \"item-id\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/plaid/webhook"
+					}
+				}
+			]
+		},
+		{
+			"name": "Auth (reference — routes not registered)",
+			"description": "Example JSON bodies matching `LoginRequest` / `RegisterRequest`. Wire `AuthController@login` and `AuthController@register` in `Modules/User/routes/api.php` (or register a dedicated auth routes file) to use these.",
+			"item": [
+				{
+					"name": "Login (not routed)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/auth/login"
+					}
+				},
+				{
+					"name": "Register (not routed)",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Example\",\n  \"email\": \"new@example.com\",\n  \"password\": \"secret12\"\n}"
+						},
+						"url": "{{base_url}}/api/v1/auth/register"
+					}
+				}
+			]
+		}
+	]
+}

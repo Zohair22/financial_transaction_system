@@ -274,13 +274,66 @@ Two requests at same time:
 
 ---
 
-## 📡 API Endpoints
+## 📡 HTTP API
 
-```bash
-POST   /api/transactions
+All JSON routes below are prefixed with `/api`. The app uses **Laravel Sanctum** (`auth:sanctum`) for most endpoints: send `Authorization: Bearer {token}` (or configure the Postman collection variable `token`).
+
+**Current user (Sanctum):**
+
+| Method | Path |
+| ------ | ---- |
+| `GET` | `/api/user` |
+
+**Versioned REST resources (`/api/v1/...`):**
+
+| Resource | Methods | Path pattern |
+| -------- | ------- | ------------ |
+| Users | `GET`, `POST`, `GET`, `PUT/PATCH`, `DELETE` | `/api/v1/users`, `/api/v1/users/{user}` |
+| Transactions | same | `/api/v1/transactions`, `/api/v1/transactions/{transaction}` |
+| APIs (module) | same | `/api/v1/apis`, `/api/v1/apis/{api}` |
+| Webhooks | same | `/api/v1/webhooks`, `/api/v1/webhooks/{webhook}` |
+
+**Plaid (JSON API):**
+
+| Method | Path | Auth |
+| ------ | ---- | ---- |
+| `GET` | `/api/v1/plaid/link-token` | Sanctum |
+| `POST` | `/api/v1/plaid/link-token/retrieve` | Sanctum |
+| `POST` | `/api/v1/plaid/public-token/exchange` | Sanctum |
+| `POST` | `/api/v1/plaid/accounts` | Sanctum |
+| `POST` | `/api/v1/plaid/transactions/sync` | Sanctum |
+| `POST` | `/api/v1/plaid/transactions/fetch` | Sanctum |
+| `POST` | `/api/v1/plaid/webhook` | None (Plaid calls this URL; secure appropriately in production) |
+
+`AuthController` (login/register) exists under `Modules/User` but is **not** registered in routes yet. To obtain a token today, use `php artisan tinker` (e.g. `User::first()?->createToken('api')->plainTextToken`) or wire the auth routes and use the reference requests in Postman.
+
+**Planned financial API** (implementation roadmap — not necessarily wired yet):
+
+```text
+POST   /api/transactions          # idempotent create (planned)
 GET    /api/transactions/{id}
-POST   /api/webhooks/payment
+POST   /api/webhooks/payment      # provider webhook (planned)
 ```
+
+Run `php artisan route:list --path=api` for the live list.
+
+---
+
+## 📮 Postman
+
+Import the collection file:
+
+`postman/Financial_Transaction_System.postman_collection.json`
+
+Set collection variables:
+
+| Variable | Purpose |
+| -------- | ------- |
+| `base_url` | App origin (default `http://localhost:8000`) |
+| `token` | Sanctum `plainTextToken` |
+| `user_id`, `transaction_id`, `api_id`, `webhook_id` | Path segments for resource requests |
+
+The collection includes folders for Sanctum, CRUD resources, Plaid (with example bodies), and **reference** login/register requests (URLs are placeholders until auth routes are registered).
 
 ---
 
@@ -303,10 +356,15 @@ composer install
 cp .env.example .env
 php artisan key:generate
 
+npm install
+npm run build
+
 php artisan migrate
 
 php artisan serve
 ```
+
+For local development with hot-reloaded assets, use `npm run dev` (or `composer run dev` if your project defines it) instead of `npm run build`.
 
 ---
 

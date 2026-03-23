@@ -10,7 +10,7 @@ use Modules\Plaid\Http\Controllers\API\ApiPlaidController;
 
 Route::middleware([Authenticate::class])->prefix('v1')->group(function () {
     Route::prefix('plaid')->group(function () {
-        Route::post('link-token', [ApiPlaidController::class, 'createLinkToken'])->name('plaid.link-token');
+        Route::get('link-token', [ApiPlaidController::class, 'createLinkToken'])->name('plaid.link-token');
         Route::post('link-token/retrieve', [ApiPlaidController::class, 'getLinkToken'])->name('plaid.link-token.retrieve');
         Route::post('public-token/exchange', [ApiPlaidController::class, 'exchangePublicToken'])->name('plaid.public-token.exchange');
         Route::post('accounts', [ApiPlaidController::class, 'fetchAccounts'])->name('plaid.accounts');
