@@ -3,7 +3,9 @@
 namespace Modules\Plaid\Providers;
 
 use Modules\Plaid\Interfaces\IClientPlaid;
+use Modules\Plaid\Interfaces\IPlaidRepository;
 use Modules\Plaid\Interfaces\IPlaidServices;
+use Modules\Plaid\Repositories\PlaidRepository;
 use Modules\Plaid\Services\ClientPlaid;
 use Modules\Plaid\Services\PlaidServices;
 use Nwidart\Modules\Support\ModuleServiceProvider;
@@ -46,6 +48,11 @@ class PlaidServiceProvider extends ModuleServiceProvider
         $this->app->bind(
             IClientPlaid::class,
             ClientPlaid::class
+        );
+
+        $this->app->bind(
+            IPlaidRepository::class,
+            PlaidRepository::class
         );
 
         $this->app->bind(

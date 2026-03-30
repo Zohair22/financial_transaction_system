@@ -11,17 +11,19 @@ readonly class FetchPlaidTransactionsDTO
         public string $accessToken,
         public ?string $startDate = null,
         public ?string $endDate = null,
+        public ?int $userId = null,
     ) {}
 
     /**
      * @param  array<string, mixed>  $validated
      */
-    public static function fromValidated(array $validated): self
+    public static function fromValidated(array $validated, ?int $userId = null): self
     {
         return new self(
             (string) $validated['access_token'],
             isset($validated['start_date']) ? (string) $validated['start_date'] : null,
             isset($validated['end_date']) ? (string) $validated['end_date'] : null,
+            $userId,
         );
     }
 }

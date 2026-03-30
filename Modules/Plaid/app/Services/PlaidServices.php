@@ -14,6 +14,7 @@ use Modules\Plaid\DTO\SyncPlaidTransactionsDTO;
 use Modules\Plaid\Events\PlaidTransactionsMapped;
 use Modules\Plaid\Exceptions\PlaidApiException;
 use Modules\Plaid\Interfaces\IClientPlaid;
+use Modules\Plaid\Interfaces\IPlaidRepository;
 use Modules\Plaid\Interfaces\IPlaidServices;
 use Throwable;
 
@@ -24,6 +25,7 @@ class PlaidServices implements IPlaidServices
 {
     public function __construct(
         protected IClientPlaid $plaid,
+        protected IPlaidRepository $repository,
     ) {}
 
     // ================= PUBLIC API METHODS =================
@@ -40,7 +42,10 @@ class PlaidServices implements IPlaidServices
             'products' => config('plaid.link.products', ['transactions', 'auth', 'identity', 'assets', 'income', 'accounts']),
         ];
 
-        return $this->plaidPost('link/token/create', $payload);
+        $response = $this->plaidPost('link/token/create', $payload);
+        $this->repository->storeLinkToken($dto, $response);
+
+        return $response;
     }
 
     public function getLinkToken(GetLinkTokenDTO $dto): array
@@ -52,16 +57,24 @@ class PlaidServices implements IPlaidServices
 
     public function exchangePublicToken(ExchangePublicTokenDTO $dto): array
     {
-        return $this->plaidPost('item/public_token/exchange', [
+        $response = $this->plaidPost('item/public_token/exchange', [
             'public_token' => $dto->publicToken,
         ]);
+
+        $this->repository->storeExchangePublicToken($dto, $response);
+
+        return $response;
     }
 
     public function fetchAccounts(FetchPlaidAccountsDTO $dto): array
     {
-        return $this->plaidPost('accounts/get', [
+        $response = $this->plaidPost('accounts/get', [
             'access_token' => $dto->accessToken,
         ]);
+
+        $this->repository->storeAccounts($dto, $response);
+
+        return $response;
     }
 
     public function fetchTransactions(FetchPlaidTransactionsDTO $dto): array
@@ -76,6 +89,7 @@ class PlaidServices implements IPlaidServices
         ];
 
         $response = $this->plaidPost('transactions/get', $payload);
+        $this->repository->storeLegacyTransactions($dto, $response);
 
         return $response;
     }
@@ -100,6 +114,7 @@ class PlaidServices implements IPlaidServices
     {
         $raw = $this->syncTransactions($dto);
         $mapped = $this->validateAndMapPlaidResponse($raw);
+        $this->repository->storeTransactionsSync($dto, $mapped, $raw);
         $this->integrateWithTransactionModule($mapped);
 
         return [

@@ -31,7 +31,7 @@ This project is built to prove:
 This system uses a modular architecture with DTOs and interface-based service and repository layers.
 
 ```bash
-Controller -> DTO -> Service Layer (Interface) -> Repository Layer (Interface) -> Database
+Controller -> DTO -> Service Layer (Interface) -> Repository Layer (Interface) -> Database (Model)
         ↓
        Queue
         ↓

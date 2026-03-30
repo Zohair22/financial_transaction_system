@@ -9,13 +9,17 @@ readonly class ExchangePublicTokenDTO
 {
     public function __construct(
         public string $publicToken,
+        public ?int $userId = null,
     ) {}
 
     /**
      * @param  array<string, mixed>  $validated
      */
-    public static function fromValidated(array $validated): self
+    public static function fromValidated(array $validated, ?int $userId = null): self
     {
-        return new self((string) $validated['public_token']);
+        return new self(
+            (string) $validated['public_token'],
+            $userId,
+        );
     }
 }

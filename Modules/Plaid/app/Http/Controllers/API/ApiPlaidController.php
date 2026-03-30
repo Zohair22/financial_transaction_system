@@ -55,7 +55,10 @@ class ApiPlaidController extends Controller
      */
     public function exchangePublicToken(ExchangePublicTokenRequest $request): JsonResponse
     {
-        $dto = ExchangePublicTokenDTO::fromValidated($request->validated());
+        $dto = ExchangePublicTokenDTO::fromValidated(
+            $request->validated(),
+            (int) $request->user()->getAuthIdentifier()
+        );
 
         return response()->json(['data' => $this->plaid->exchangePublicToken($dto)]);
     }
@@ -65,7 +68,10 @@ class ApiPlaidController extends Controller
      */
     public function fetchAccounts(FetchPlaidAccountsRequest $request): JsonResponse
     {
-        $dto = FetchPlaidAccountsDTO::fromValidated($request->validated());
+        $dto = FetchPlaidAccountsDTO::fromValidated(
+            $request->validated(),
+            (int) $request->user()->getAuthIdentifier()
+        );
 
         return response()->json(['data' => $this->plaid->fetchAccounts($dto)]);
     }
@@ -75,7 +81,10 @@ class ApiPlaidController extends Controller
      */
     public function syncTransactions(SyncPlaidTransactionsRequest $request): JsonResponse
     {
-        $dto = SyncPlaidTransactionsDTO::fromValidated($request->validated());
+        $dto = SyncPlaidTransactionsDTO::fromValidated(
+            $request->validated(),
+            (int) $request->user()->getAuthIdentifier()
+        );
 
         return response()->json(['data' => $this->plaid->syncTransactionsAndIntegrate($dto)]);
     }
@@ -85,7 +94,10 @@ class ApiPlaidController extends Controller
      */
     public function fetchTransactions(FetchPlaidTransactionsRequest $request): JsonResponse
     {
-        $dto = FetchPlaidTransactionsDTO::fromValidated($request->validated());
+        $dto = FetchPlaidTransactionsDTO::fromValidated(
+            $request->validated(),
+            (int) $request->user()->getAuthIdentifier()
+        );
 
         return response()->json(['data' => $this->plaid->fetchTransactions($dto)]);
     }
