@@ -2,11 +2,11 @@
 
 namespace Modules\User\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
+use Modules\User\Interfaces\IAuthService;
 use Modules\User\Interfaces\IUserRepository;
 use Modules\User\Repositories\UserRepository;
-use Modules\User\Interfaces\IAuthService;
 use Modules\User\Services\AuthService;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class UserServiceProvider extends ModuleServiceProvider
 {
@@ -48,7 +48,7 @@ class UserServiceProvider extends ModuleServiceProvider
     /**
      * Define module schedules.
      *
-     * @param $schedule
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

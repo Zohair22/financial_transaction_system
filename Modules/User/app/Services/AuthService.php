@@ -4,8 +4,8 @@ namespace Modules\User\Services;
 
 use Illuminate\Support\Facades\Hash;
 use Modules\User\DTO\AuthDTO;
-use Modules\User\Interfaces\IUserRepository;
 use Modules\User\Interfaces\IAuthService;
+use Modules\User\Interfaces\IUserRepository;
 
 class AuthService implements IAuthService
 {

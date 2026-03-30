@@ -2,11 +2,11 @@
 
 namespace Modules\User\Http\Controllers\API;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Routing\Controller;
 use Modules\User\Http\Requests\LoginRequest;
 use Modules\User\Http\Requests\RegisterRequest;
 use Modules\User\Interfaces\IAuthService;
-use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
